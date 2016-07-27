@@ -1,44 +1,36 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { counterIncrement, counterDecrement } from '../actions'
 
 class Counter extends Component {
   constructor(props) {
     super(props)
     this.incrementAsync = this.incrementAsync.bind(this)
     this.incrementIfOdd = this.incrementIfOdd.bind(this)
-    this.onIncrement = this.onIncrement.bind(this)
-    this.onDecrement = this.onDecrement.bind(this)
   }
 
   incrementIfOdd() {
     if (this.props.value % 2 !== 0) {
-      this.onIncrement()
+      this.props.counterIncrement()
     }
   }
 
   incrementAsync() {
-    setTimeout(this.onIncrement, 1000)
-  }
-
-  onIncrement() {
-	this.props.dispatch({ type: 'INCREMENT' });
-  }
-
-  onDecrement() {
-	this.props.dispatch({ type: 'DECREMENT' });
+    setTimeout(this.props.counterIncrement, 1000)
   }
 
   render() {
-    const { counter } = this.props
+
     return (
       <p>
-        Clicked: {counter} times
+        Clicked: {this.props.counter} times
         {' '}
-        <button onClick={this.onIncrement}>
+        <button onClick={this.props.counterIncrement}>
           +
         </button>
         {' '}
-        <button onClick={this.onDecrement}>
+        <button onClick={this.props.counterDecrement}>
           -
         </button>
         {' '}
@@ -54,16 +46,19 @@ class Counter extends Component {
   }
 }
 
-Counter.propTypes = {
-  store: PropTypes.func.isRequired
-}
-
 // export default Counter
 
 function mapStateToProps(state) {
 	return {
-		counter: state
+		counter: state.counter
 	}
 }
 
-export default connect(mapStateToProps)(Counter);
+function matchDispatchToProps(dispatch) {
+	return bindActionCreators({
+		counterIncrement: counterIncrement,
+		counterDecrement: counterDecrement
+	}, dispatch);
+}
+
+export default connect(mapStateToProps, matchDispatchToProps)(Counter);
