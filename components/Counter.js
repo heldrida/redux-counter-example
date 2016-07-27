@@ -29,7 +29,7 @@ class Counter extends Component {
   }
 
   render() {
-    const { counter, onIncrement, onDecrement } = this.props
+    const { counter } = this.props
     return (
       <p>
         Clicked: {counter} times
